@@ -1,40 +1,48 @@
 <!DOCTYPE html>
 <html>
+
 <head>
+
 <title>Teacher Test Upload - SmartPass Rwanda</title>
 
 <style>
+
 body{
     font-family: Arial;
-    margin: 30px;
+    margin:30px;
 }
 
 textarea{
-    width: 100%;
-    height: 350px;
+    width:100%;
+    height:350px;
+    padding:10px;
 }
 
 input, select{
-    width: 300px;
-    padding: 8px;
+    width:300px;
+    padding:8px;
 }
 
 button{
-    padding: 12px 25px;
-    background: green;
-    color: white;
-    border: none;
-    cursor: pointer;
+    padding:12px 25px;
+    background:green;
+    color:white;
+    border:none;
+    cursor:pointer;
+    font-size:16px;
 }
+
 </style>
 
 </head>
 
+
 <body>
+
 
 <h1>👩‍🏫 SmartPass Rwanda Teacher Dashboard</h1>
 
-<h3>Create Examination</h3>
+<h2>Upload Examination</h2>
 
 
 <label>Subject</label><br>
@@ -47,8 +55,10 @@ button{
 <option>Physics</option>
 <option>English</option>
 <option>Geography</option>
+<option>History</option>
 
 </select>
+
 
 <br><br>
 
@@ -66,6 +76,7 @@ button{
 
 </select>
 
+
 <br><br>
 
 
@@ -79,6 +90,7 @@ button{
 
 </select>
 
+
 <br><br>
 
 
@@ -86,41 +98,84 @@ button{
 
 <input id="duration" placeholder="Example: 1 hour">
 
+
 <br><br>
 
 
-<h3>Paste Full Test Here</h3>
+<h3>Paste Full Test</h3>
 
 
 <textarea id="testText"
-placeholder="Paste 15 or more questions here..."></textarea>
+
+placeholder="Example:
+
+1. What is DNA?
+
+A. Protein
+
+B. Nucleic Acid
+
+C. Lipid
+
+D. Sugar
+
+Answer: B
+
+
+2. Which organelle produces ATP?
+
+A. Nucleus
+
+B. Mitochondria
+
+C. Ribosome
+
+D. Cell wall
+
+Answer: B
+
+"></textarea>
+
 
 
 <br><br>
 
 
 <button onclick="uploadTest()">
+
 Upload Test
+
 </button>
 
 
 
 <script type="module">
 
-import { initializeApp } 
+
+import { initializeApp }
+
 from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
 
 
+
 import {
+
 getFirestore,
+
 collection,
+
 addDoc
-} 
+
+}
+
 from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
 
 
+
+
 const firebaseConfig = {
+
 
 apiKey: "AIzaSyDCrBUVGFHD2Qu3KStXKOKw7bJFffQSHQ8",
 
@@ -138,19 +193,50 @@ appId: "1:358453346236:web:c0e8263ea09a0b311af5b9"
 
 
 
+
+
 const app = initializeApp(firebaseConfig);
 
+
 const db = getFirestore(app);
+
+
 
 
 
 window.uploadTest = async function(){
 
 
-let test = document.getElementById("testText").value;
+
+let text = document.getElementById("testText").value;
 
 
-await addDoc(collection(db,"tests"),{
+
+if(text.trim()==""){
+
+alert("Please paste a test first");
+
+return;
+
+}
+
+
+
+
+
+// Split questions automatically
+
+let questions = text.split(/\n(?=\d+\.)/);
+
+
+
+
+
+for(let q of questions){
+
+
+
+await addDoc(collection(db,"quizzes"),{
 
 
 subject:
@@ -169,7 +255,7 @@ duration:
 document.getElementById("duration").value,
 
 
-content:test,
+questionText:q,
 
 
 createdAt:new Date()
@@ -178,13 +264,24 @@ createdAt:new Date()
 });
 
 
-alert("✅ Test uploaded successfully!");
 
 }
+
+
+
+
+
+alert("✅ Test uploaded and separated into questions!");
+
+
+
+};
+
 
 
 </script>
 
 
 </body>
+
 </html>
