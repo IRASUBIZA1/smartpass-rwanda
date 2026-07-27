@@ -1,126 +1,190 @@
-```html
 <!DOCTYPE html>
 <html>
 <head>
-<title>Teacher Dashboard - SmartPass Rwanda</title>
+<title>Teacher Test Upload - SmartPass Rwanda</title>
+
+<style>
+body{
+    font-family: Arial;
+    margin: 30px;
+}
+
+textarea{
+    width: 100%;
+    height: 350px;
+}
+
+input, select{
+    width: 300px;
+    padding: 8px;
+}
+
+button{
+    padding: 12px 25px;
+    background: green;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+</style>
+
 </head>
 
 <body>
 
-<h1>👩‍🏫 Teacher Quiz Upload</h1>
+<h1>👩‍🏫 SmartPass Rwanda Teacher Dashboard</h1>
 
-<label>Question</label><br>
-<input id="question" type="text">
-<br><br>
+<h3>Create Examination</h3>
 
-<label>Option A</label><br>
-<input id="optionA" type="text">
-<br><br>
-
-<label>Option B</label><br>
-<input id="optionB" type="text">
-<br><br>
-
-<label>Option C</label><br>
-<input id="optionC" type="text">
-<br><br>
-
-<label>Option D</label><br>
-<input id="optionD" type="text">
-<br><br>
-
-<label>Correct Answer</label><br>
-<input id="answer" type="text">
-<br><br>
 
 <label>Subject</label><br>
-<input id="subject" type="text">
+
+<select id="subject">
+
+<option>Biology</option>
+<option>Chemistry</option>
+<option>Mathematics</option>
+<option>Physics</option>
+<option>English</option>
+<option>Geography</option>
+
+</select>
+
 <br><br>
 
-<label>Level (Example: S4, S5, or S6)</label><br>
-<input id="level" type="text">
+
+<label>Level</label><br>
+
+<select id="level">
+
+<option>S1</option>
+<option>S2</option>
+<option>S3</option>
+<option>S4</option>
+<option>S5</option>
+<option>S6</option>
+
+</select>
+
 <br><br>
 
-<button onclick="uploadQuiz()">Upload Quiz</button>
+
+<label>Term</label><br>
+
+<select id="term">
+
+<option>Term 1</option>
+<option>Term 2</option>
+<option>Term 3</option>
+
+</select>
+
+<br><br>
+
+
+<label>Duration</label><br>
+
+<input id="duration" placeholder="Example: 1 hour">
+
+<br><br>
+
+
+<h3>Paste Full Test Here</h3>
+
+
+<textarea id="testText"
+placeholder="Paste 15 or more questions here..."></textarea>
+
+
+<br><br>
+
+
+<button onclick="uploadTest()">
+Upload Test
+</button>
+
 
 
 <script type="module">
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+import { initializeApp } 
+from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+
 
 import {
-  getFirestore,
-  collection,
-  addDoc
-} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+getFirestore,
+collection,
+addDoc
+} 
+from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
 
-// Firebase Configuration
+
 const firebaseConfig = {
-  apiKey: "AIzaSyDCrBUVGFHD2Qu3KStXKOKw7bJFffQSHQ8",
-  authDomain: "smartpass-rwanda.firebaseapp.com",
-  projectId: "smartpass-rwanda",
-  storageBucket: "smartpass-rwanda.firebasestorage.app",
-  messagingSenderId: "358453346236",
-  appId: "1:358453346236:web:c0e8263ea09a0b311af5b9",
-  measurementId: "G-990PQD6RH2"
+
+apiKey: "AIzaSyDCrBUVGFHD2Qu3KStXKOKw7bJFffQSHQ8",
+
+authDomain: "smartpass-rwanda.firebaseapp.com",
+
+projectId: "smartpass-rwanda",
+
+storageBucket: "smartpass-rwanda.firebasestorage.app",
+
+messagingSenderId: "358453346236",
+
+appId: "1:358453346236:web:c0e8263ea09a0b311af5b9"
+
 };
 
 
-// Initialize Firebase
+
 const app = initializeApp(firebaseConfig);
+
 const db = getFirestore(app);
 
 
-// Upload Quiz Function
-window.uploadQuiz = async function () {
 
-  try {
+window.uploadTest = async function(){
 
-    await addDoc(collection(db, "quizzes"), {
 
-      question: document.getElementById("question").value,
+let test = document.getElementById("testText").value;
 
-      optionA: document.getElementById("optionA").value,
 
-      optionB: document.getElementById("optionB").value,
+await addDoc(collection(db,"tests"),{
 
-      optionC: document.getElementById("optionC").value,
 
-      optionD: document.getElementById("optionD").value,
+subject:
+document.getElementById("subject").value,
 
-      answer: document.getElementById("answer").value,
 
-      subject: document.getElementById("subject").value,
+level:
+document.getElementById("level").value,
 
-      level: document.getElementById("level").value
 
-    });
+term:
+document.getElementById("term").value,
 
-    alert("Quiz uploaded successfully!");
 
-    // Clear the form after uploading
-    document.getElementById("question").value = "";
-    document.getElementById("optionA").value = "";
-    document.getElementById("optionB").value = "";
-    document.getElementById("optionC").value = "";
-    document.getElementById("optionD").value = "";
-    document.getElementById("answer").value = "";
-    document.getElementById("subject").value = "";
-    document.getElementById("level").value = "";
+duration:
+document.getElementById("duration").value,
 
-  }
 
-  catch (error) {
+content:test,
 
-    alert("Error: " + error.message);
 
-  }
+createdAt:new Date()
 
-};
+
+});
+
+
+alert("✅ Test uploaded successfully!");
+
+}
+
 
 </script>
 
+
 </body>
 </html>
-```
