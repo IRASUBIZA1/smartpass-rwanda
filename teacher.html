@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,54 +9,118 @@
 
 <h1>👩‍🏫 Teacher Quiz Upload</h1>
 
-<label>Question</label>
+<label>Question</label><br>
 <input id="question" type="text">
-
 <br><br>
 
-<label>Option A</label>
+<label>Option A</label><br>
 <input id="optionA" type="text">
-
 <br><br>
 
-<label>Option B</label>
+<label>Option B</label><br>
 <input id="optionB" type="text">
-
 <br><br>
 
-<label>Option C</label>
+<label>Option C</label><br>
 <input id="optionC" type="text">
-
 <br><br>
 
-<label>Option D</label>
+<label>Option D</label><br>
 <input id="optionD" type="text">
-
 <br><br>
 
-<label>Correct Answer</label>
+<label>Correct Answer</label><br>
 <input id="answer" type="text">
-
 <br><br>
 
-<label>Subject</label>
+<label>Subject</label><br>
 <input id="subject" type="text">
-
 <br><br>
 
-<label>Level</label>
+<label>Level (Example: S4, S5, or S6)</label><br>
 <input id="level" type="text">
-
 <br><br>
 
 <button onclick="uploadQuiz()">Upload Quiz</button>
 
 
-<script>
-function uploadQuiz(){
-alert("Quiz upload system coming next!");
-}
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+
+import {
+  getFirestore,
+  collection,
+  addDoc
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+
+
+// Firebase Configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyDCrBUVGFHD2Qu3KStXKOKw7bJFffQSHQ8",
+  authDomain: "smartpass-rwanda.firebaseapp.com",
+  projectId: "smartpass-rwanda",
+  storageBucket: "smartpass-rwanda.firebasestorage.app",
+  messagingSenderId: "358453346236",
+  appId: "1:358453346236:web:c0e8263ea09a0b311af5b9",
+  measurementId: "G-990PQD6RH2"
+};
+
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+
+// Upload Quiz Function
+window.uploadQuiz = async function () {
+
+  try {
+
+    await addDoc(collection(db, "quizzes"), {
+
+      question: document.getElementById("question").value,
+
+      optionA: document.getElementById("optionA").value,
+
+      optionB: document.getElementById("optionB").value,
+
+      optionC: document.getElementById("optionC").value,
+
+      optionD: document.getElementById("optionD").value,
+
+      answer: document.getElementById("answer").value,
+
+      subject: document.getElementById("subject").value,
+
+      level: document.getElementById("level").value
+
+    });
+
+    alert("Quiz uploaded successfully!");
+
+    // Clear the form after uploading
+    document.getElementById("question").value = "";
+    document.getElementById("optionA").value = "";
+    document.getElementById("optionB").value = "";
+    document.getElementById("optionC").value = "";
+    document.getElementById("optionD").value = "";
+    document.getElementById("answer").value = "";
+    document.getElementById("subject").value = "";
+    document.getElementById("level").value = "";
+
+  }
+
+  catch (error) {
+
+    alert("Error: " + error.message);
+
+  }
+
+};
+
 </script>
 
 </body>
 </html>
+```
