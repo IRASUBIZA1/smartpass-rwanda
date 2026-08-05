@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Teacher Login - SmartPass Rwanda</title>
+
+<style>
+
+body{
+    font-family:Arial,sans-serif;
+    background:#f5f7fa;
+}
+
+.container{
+    width:350px;
+    margin:50px auto;
+    background:white;
+    padding:30px;
+    border-radius:10px;
+    box-shadow:0 2px 8px #ccc;
+}
+
+input{
+    width:100%;
+    padding:10px;
+    margin:10px 0;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    background:#0066cc;
+    color:white;
+    border:0;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+<h2>👨‍🏫 Teacher Login</h2>
+
+
+<input id="email" placeholder="Teacher Email">
+
+
+<input id="password" type="password" placeholder="Password">
+
+
+<button id="login">
+Login
+</button>
+
+
+<p id="message"></p>
+
+
+</div>
+
+
+
+
+<script type="module">
+
+
+import {auth} from "./js/firebase.js";
+
+
+import {
+
+signInWithEmailAndPassword
+
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+
+
+document.getElementById("login").onclick = async()=>{
+
+
+let email =
+document.getElementById("email").value;
+
+
+let password =
+document.getElementById("password").value;
+
+
+
+try{
+
+
+await signInWithEmailAndPassword(
+
+auth,
+
+email,
+
+password
+
+);
+
+
+
+document.getElementById("message").innerHTML =
+"Login successful ✅";
+
+
+window.location.href="teacher.html";
+
+
+}
+
+
+catch(error){
+
+
+document.getElementById("message").innerHTML =
+error.message;
+
+
+}
+
+
+
+};
+
+
+</script>
+
+
+</body>
+
+</html>
