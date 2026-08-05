@@ -43,6 +43,10 @@ border-radius:5px;
 cursor:pointer;
 }
 
+button:hover{
+background:#004c99;
+}
+
 </style>
 
 </head>
@@ -69,7 +73,7 @@ cursor:pointer;
 <input id="subject" placeholder="Subject">
 
 
-<input id="class" placeholder="Class (Example S6)">
+<input id="className" placeholder="Class (Example S6)">
 
 
 <input id="topic" placeholder="Topic">
@@ -87,7 +91,6 @@ Create Quiz
 
 
 </div>
-
 
 
 
@@ -123,7 +126,7 @@ Create Quiz
 </select>
 
 
-<input id="quizId" placeholder="Quiz ID">
+<input id="quizId" placeholder="Paste Quiz ID here">
 
 
 <button id="addQuestion">
@@ -137,7 +140,6 @@ Save Question
 </div>
 
 
-
 </div>
 
 
@@ -146,7 +148,14 @@ Save Question
 <script type="module">
 
 
-import {db} from "./js/firebase.js";
+import {db, auth} from "./js/firebase.js";
+
+
+import {
+
+onAuthStateChanged
+
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 
 import {
@@ -158,36 +167,62 @@ addDoc
 
 
 
+// 🔒 Teacher protection
+
+onAuthStateChanged(auth,(user)=>{
+
+if(!user){
+
+window.location.href="teacher-login.html";
+
+}
+
+});
 
 
-let currentQuizId="";
 
 
-
+// Create Quiz
 
 
 document.getElementById("createQuiz").onclick = async()=>{
 
 
-let doc = await addDoc(
+try{
+
+
+const quiz = await addDoc(
 
 collection(db,"quizzes"),
 
 {
 
-title:title.value,
 
-subject:subject.value,
+title:
+document.getElementById("title").value,
 
-class:class.value,
 
-topic:topic.value,
+subject:
+document.getElementById("subject").value,
 
-duration:Number(duration.value),
+
+class:
+document.getElementById("className").value,
+
+
+topic:
+document.getElementById("topic").value,
+
+
+duration:
+Number(document.getElementById("duration").value),
+
 
 status:"active",
 
+
 stream:"all"
+
 
 }
 
@@ -195,15 +230,27 @@ stream:"all"
 
 
 
-currentQuizId = doc.id;
+document.getElementById("quizId").value = quiz.id;
 
-
-document.getElementById("quizId").value = doc.id;
 
 
 document.getElementById("quizMessage").innerHTML =
 
-"Quiz created. ID: "+doc.id;
+"✅ Quiz created. ID: "+quiz.id;
+
+
+
+}
+
+
+catch(error){
+
+
+document.getElementById("quizMessage").innerHTML =
+error.message;
+
+
+}
 
 
 };
@@ -213,7 +260,13 @@ document.getElementById("quizMessage").innerHTML =
 
 
 
+// Add Question
+
+
 document.getElementById("addQuestion").onclick = async()=>{
+
+
+try{
 
 
 await addDoc(
@@ -223,19 +276,32 @@ collection(db,"questions"),
 {
 
 
-quizId:quizId.value,
+quizId:
+document.getElementById("quizId").value,
 
-question:question.value,
 
-optionA:optionA.value,
+question:
+document.getElementById("question").value,
 
-optionB:optionB.value,
 
-optionC:optionC.value,
+optionA:
+document.getElementById("optionA").value,
 
-optionD:optionD.value,
 
-answer:answer.value
+optionB:
+document.getElementById("optionB").value,
+
+
+optionC:
+document.getElementById("optionC").value,
+
+
+optionD:
+document.getElementById("optionD").value,
+
+
+answer:
+document.getElementById("answer").value
 
 
 }
@@ -244,9 +310,22 @@ answer:answer.value
 
 
 
-document.getElementById("questionMessage").innerHTML=
+document.getElementById("questionMessage").innerHTML =
 
-"Question saved successfully";
+"✅ Question saved successfully";
+
+
+}
+
+
+catch(error){
+
+
+document.getElementById("questionMessage").innerHTML =
+error.message;
+
+
+}
 
 
 };
