@@ -65,7 +65,6 @@ Loading quizzes...
 
 
 
-
 <script type="module">
 
 
@@ -91,9 +90,14 @@ async function loadQuizzes(){
 try{
 
 
-const snapshot = await getDocs(
-collection(db,"quizzes")
-);
+console.log("Connecting to Firestore...");
+
+
+const snapshot = await getDocs(collection(db,"quizzes"));
+
+
+
+console.log("NUMBER OF QUIZZES:", snapshot.size);
 
 
 
@@ -101,12 +105,15 @@ quizList.innerHTML="";
 
 
 
-if(snapshot.empty){
+if(snapshot.size === 0){
 
-quizList.innerHTML =
+
+quizList.innerHTML = 
 "No quizzes available.";
 
+
 return;
+
 
 }
 
@@ -115,11 +122,13 @@ return;
 snapshot.forEach((doc)=>{
 
 
+console.log("QUIZ ID:", doc.id);
+
+
 const quiz = doc.data();
 
 
-
-console.log("Quiz found:", quiz);
+console.log("QUIZ DATA:", quiz);
 
 
 
@@ -132,30 +141,19 @@ quizList.innerHTML += `
 <h2>📝 ${quiz.title}</h2>
 
 
-<p>
-<b>Subject:</b> ${quiz.subject}
-</p>
+<p><b>Subject:</b> ${quiz.subject}</p>
 
 
-<p>
-<b>Class:</b> ${quiz.class}
-</p>
+<p><b>Class:</b> ${quiz.class}</p>
 
 
-<p>
-<b>Stream:</b> ${quiz.stream}
-</p>
+<p><b>Stream:</b> ${quiz.stream}</p>
 
 
-<p>
-<b>Topic:</b> ${quiz.topic}
-</p>
+<p><b>Topic:</b> ${quiz.topic}</p>
 
 
-<p>
-<b>Duration:</b> ${quiz.duration} minutes
-</p>
-
+<p><b>Duration:</b> ${quiz.duration} minutes</p>
 
 
 <a href="quiz.html?id=${doc.id}">
@@ -182,15 +180,16 @@ Start Quiz
 catch(error){
 
 
-console.error(error);
+console.error("FIREBASE ERROR:", error);
 
 
 quizList.innerHTML =
 
-"Error loading quizzes: " + error.message;
+"Error: " + error.message;
 
 
 }
+
 
 
 }
@@ -198,7 +197,6 @@ quizList.innerHTML =
 
 
 loadQuizzes();
-
 
 
 </script>
