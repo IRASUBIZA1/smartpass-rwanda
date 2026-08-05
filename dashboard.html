@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Dashboard - SmartPass Rwanda</title>
+
+<style>
+
+body{
+    font-family:Arial,sans-serif;
+    background:#f5f7fa;
+}
+
+header{
+    background:#0066cc;
+    color:white;
+    text-align:center;
+    padding:25px;
+}
+
+.container{
+    width:90%;
+    margin:auto;
+}
+
+.card{
+    background:white;
+    padding:25px;
+    margin:20px 0;
+    border-radius:10px;
+    box-shadow:0 2px 8px #ccc;
+    text-align:center;
+}
+
+button{
+    background:#0066cc;
+    color:white;
+    padding:12px 20px;
+    border:0;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+<h1>SmartPass Rwanda 🇷🇼</h1>
+
+<p id="welcome">
+Welcome Student
+</p>
+
+</header>
+
+
+
+<div class="container">
+
+
+<div class="card">
+
+<h2>📚 Quizzes</h2>
+
+<p>
+Practice quizzes and improve your performance.
+</p>
+
+<a href="quizzes.html">
+
+<button>
+Start Quiz
+</button>
+
+</a>
+
+</div>
+
+
+
+<div class="card">
+
+<h2>📊 My Results</h2>
+
+<p>
+View your quiz scores and progress.
+</p>
+
+<a href="results.html">
+
+<button>
+View Results
+</button>
+
+</a>
+
+</div>
+
+
+
+<div class="card">
+
+<h2>🚪 Logout</h2>
+
+<button id="logout">
+Logout
+</button>
+
+</div>
+
+
+</div>
+
+
+
+
+<script type="module">
+
+
+import {auth} from "./js/firebase.js";
+
+
+import {
+onAuthStateChanged,
+signOut
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+
+
+onAuthStateChanged(auth,(user)=>{
+
+
+if(user){
+
+document.getElementById("welcome").innerHTML =
+"Welcome " + user.email;
+
+
+}else{
+
+window.location.href="login.html";
+
+}
+
+
+});
+
+
+
+
+document.getElementById("logout").onclick=()=>{
+
+
+signOut(auth);
+
+window.location.href="login.html";
+
+
+};
+
+
+</script>
+
+
+
+</body>
+
+</html>
