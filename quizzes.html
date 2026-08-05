@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Quizzes - SmartPass Rwanda</title>
+
+<style>
+
+body{
+    font-family:Arial,sans-serif;
+    background:#f5f7fa;
+}
+
+h1{
+    text-align:center;
+    color:#0066cc;
+}
+
+.container{
+    width:90%;
+    margin:auto;
+}
+
+.quiz{
+    background:white;
+    padding:20px;
+    margin:15px;
+    border-radius:10px;
+    box-shadow:0 2px 8px #ccc;
+}
+
+button{
+    background:#0066cc;
+    color:white;
+    padding:10px 20px;
+    border:0;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<h1>🧠 SmartPass Quizzes</h1>
+
+
+<div class="container" id="quizList">
+
+Loading quizzes...
+
+</div>
+
+
+
+
+<script type="module">
+
+
+import {db} from "./js/firebase.js";
+
+
+import {
+
+collection,
+getDocs
+
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+
+let quizList=document.getElementById("quizList");
+
+
+
+async function loadQuizzes(){
+
+
+let querySnapshot =
+await getDocs(collection(db,"quizzes"));
+
+
+
+quizList.innerHTML="";
+
+
+
+querySnapshot.forEach((doc)=>{
+
+
+let quiz=doc.data();
+
+
+
+quizList.innerHTML += `
+
+
+<div class="quiz">
+
+
+<h2>${quiz.title}</h2>
+
+<p>Subject: ${quiz.subject}</p>
+
+<p>Class: ${quiz.class}</p>
+
+<p>Topic: ${quiz.topic}</p>
+
+<p>Duration: ${quiz.duration} minutes</p>
+
+
+<a href="quiz.html?id=${doc.id}">
+
+<button>
+Start Quiz
+</button>
+
+</a>
+
+
+</div>
+
+
+`;
+
+
+});
+
+
+}
+
+
+
+loadQuizzes();
+
+
+
+</script>
+
+
+</body>
+
+</html>
