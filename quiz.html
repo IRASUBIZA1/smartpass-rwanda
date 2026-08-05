@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Quiz - SmartPass Rwanda</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#f5f7fa;
+}
+
+.container{
+width:90%;
+margin:auto;
+}
+
+.question{
+background:white;
+padding:20px;
+margin:20px 0;
+border-radius:10px;
+box-shadow:0 2px 8px #ccc;
+}
+
+button{
+background:#0066cc;
+color:white;
+padding:12px 20px;
+border:0;
+border-radius:5px;
+cursor:pointer;
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+<h1>📝 Quiz</h1>
+
+<div id="questions">
+
+Loading questions...
+
+</div>
+
+
+<button id="submit">
+Submit Quiz
+</button>
+
+
+<p id="result"></p>
+
+
+</div>
+
+
+
+
+<script type="module">
+
+
+import {db,auth} from "./js/firebase.js";
+
+
+import {
+
+collection,
+query,
+where,
+getDocs,
+addDoc,
+serverTimestamp
+
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+
+let params =
+new URLSearchParams(window.location.search);
+
+
+let quizId=params.get("id");
+
+
+let questions=[];
+
+
+
+async function loadQuestions(){
+
+
+let q=query(
+
+collection(db,"questions"),
+
+where("quizId","==",quizId)
+
+);
+
+
+
+let snapshot=await getDocs(q);
+
+
+
+let box=document.getElementById("questions");
+
+box.innerHTML="";
+
+
+snapshot.forEach((doc)=>{
+
+
+let data=doc.data();
+
+questions.push(data);
+
+
+
+box.innerHTML += `
+
+
+<div class="question">
+
+
+<h3>${data.question}</h3>
+
+
+<label>
+<input type="radio" name="${doc.id}" value="A">
+${data.optionA}
+</label><br>
+
+
+<label>
+<input type="radio" name="${doc.id}" value="B">
+${data.optionB}
+</label><br>
+
+
+<label>
+<input type="radio" name="${doc.id}" value="C">
+${data.optionC}
+</label><br>
+
+
+<label>
+<input type="radio" name="${doc.id}" value="D">
+${data.optionD}
+</label>
+
+
+</div>
+
+
+`;
+
+
+});
+
+
+}
+
+
+loadQuestions();
+
+
+
+
+
+document.getElementById("submit").onclick=async()=>{
+
+
+let score=0;
+
+
+
+questions.forEach((q,index)=>{
+
+
+let selected =
+document.querySelector(
+`input[name="${Object.keys(q)[0]}"]`
+);
+
+
+});
+
+
+
+let answers=
+document.querySelectorAll("input:checked");
+
+
+
+answers.forEach((answer)=>{
+
+
+let question =
+questions.find(q=>q.answer==answer.value);
+
+
+
+if(question){
+
+score++;
+
+}
+
+
+});
+
+
+
+let total=questions.length;
+
+
+let percentage=
+Math.round((score/total)*100);
+
+
+
+await addDoc(collection(db,"results"),{
+
+
+userId:auth.currentUser.uid,
+
+quizId:quizId,
+
+score:score,
+
+total:total,
+
+percentage:percentage,
+
+submittedAt:serverTimestamp()
+
+
+});
+
+
+
+document.getElementById("result").innerHTML=
+
+"Your score: "+score+"/"+total;
+
+
+
+};
+
+
+</script>
+
+
+</body>
+
+</html>
