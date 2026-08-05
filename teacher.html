@@ -47,6 +47,10 @@ button:hover{
 background:#004c99;
 }
 
+#logout{
+background:#cc0000;
+}
+
 </style>
 
 </head>
@@ -59,6 +63,14 @@ background:#004c99;
 
 
 <h1>👨‍🏫 SmartPass Teacher Panel</h1>
+
+
+<p id="teacherEmail"></p>
+
+<button id="logout">
+Logout
+</button>
+
 
 
 <div class="card">
@@ -91,6 +103,8 @@ Create Quiz
 
 
 </div>
+
+
 
 
 
@@ -145,6 +159,7 @@ Save Question
 
 
 
+
 <script type="module">
 
 
@@ -153,7 +168,8 @@ import {db, auth} from "./js/firebase.js";
 
 import {
 
-onAuthStateChanged
+onAuthStateChanged,
+signOut
 
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
@@ -167,17 +183,50 @@ addDoc
 
 
 
-// 🔒 Teacher protection
+
+// 🔒 Protect teacher page
 
 onAuthStateChanged(auth,(user)=>{
 
-if(!user){
 
-window.location.href="teacher-login.html";
+if(user){
+
+
+document.getElementById("teacherEmail").innerHTML =
+
+"Logged in as: " + user.email;
+
 
 }
 
+
+else{
+
+
+window.location.href="teacher-login.html";
+
+
+}
+
+
 });
+
+
+
+
+// Logout
+
+document.getElementById("logout").onclick = async()=>{
+
+
+await signOut(auth);
+
+
+window.location.href="teacher-login.html";
+
+
+};
+
 
 
 
@@ -233,11 +282,9 @@ stream:"all"
 document.getElementById("quizId").value = quiz.id;
 
 
-
 document.getElementById("quizMessage").innerHTML =
 
 "✅ Quiz created. ID: "+quiz.id;
-
 
 
 }
