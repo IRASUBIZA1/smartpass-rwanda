@@ -1,35 +1,46 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
 
-<title>Teacher Test Upload - SmartPass Rwanda</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Teacher Panel - SmartPass Rwanda</title>
 
 <style>
 
 body{
-    font-family: Arial;
-    margin:30px;
+font-family:Arial;
+background:#f5f7fa;
 }
 
-textarea{
-    width:100%;
-    height:350px;
-    padding:10px;
+.container{
+width:90%;
+margin:auto;
 }
 
-input, select{
-    width:300px;
-    padding:8px;
+.card{
+background:white;
+padding:20px;
+margin:20px 0;
+border-radius:10px;
+box-shadow:0 2px 8px #ccc;
+}
+
+input,select{
+width:100%;
+padding:10px;
+margin:8px 0;
 }
 
 button{
-    padding:12px 25px;
-    background:green;
-    color:white;
-    border:none;
-    cursor:pointer;
-    font-size:16px;
+background:#0066cc;
+color:white;
+border:0;
+padding:12px 20px;
+border-radius:5px;
+cursor:pointer;
 }
 
 </style>
@@ -40,154 +51,160 @@ button{
 <body>
 
 
-<h1>👩‍🏫 SmartPass Rwanda Teacher Dashboard</h1>
-
-<h2>Upload Examination</h2>
+<div class="container">
 
 
-<label>Subject</label><br>
-
-<select id="subject">
-
-<option>Biology</option>
-<option>Chemistry</option>
-<option>Mathematics</option>
-<option>Physics</option>
-<option>English</option>
-<option>Geography</option>
-<option>History</option>
-
-</select>
+<h1>👨‍🏫 SmartPass Teacher Panel</h1>
 
 
-<br><br>
+<div class="card">
 
 
-<label>Level</label><br>
-
-<select id="level">
-
-<option>S1</option>
-<option>S2</option>
-<option>S3</option>
-<option>S4</option>
-<option>S5</option>
-<option>S6</option>
-
-</select>
+<h2>Create Quiz</h2>
 
 
-<br><br>
+<input id="title" placeholder="Quiz title">
 
 
-<label>Term</label><br>
-
-<select id="term">
-
-<option>Term 1</option>
-<option>Term 2</option>
-<option>Term 3</option>
-
-</select>
+<input id="subject" placeholder="Subject">
 
 
-<br><br>
+<input id="class" placeholder="Class (Example S6)">
 
 
-<label>Duration</label><br>
-
-<input id="duration" placeholder="Example: 1 hour">
+<input id="topic" placeholder="Topic">
 
 
-<br><br>
+<input id="duration" type="number" placeholder="Duration minutes">
 
 
-<h3>Paste Full Test</h3>
-
-
-<textarea id="testText"
-
-placeholder="Example:
-
-1. What is DNA?
-
-A. Protein
-
-B. Nucleic Acid
-
-C. Lipid
-
-D. Sugar
-
-Answer: B
-
-
-2. Which organelle produces ATP?
-
-A. Nucleus
-
-B. Mitochondria
-
-C. Ribosome
-
-D. Cell wall
-
-Answer: B
-
-"></textarea>
-
-
-
-<br><br>
-
-
-<button onclick="uploadTest()">
-
-Upload Test
-
+<button id="createQuiz">
+Create Quiz
 </button>
+
+
+<p id="quizMessage"></p>
+
+
+</div>
+
+
+
+
+
+<div class="card">
+
+
+<h2>Add Question</h2>
+
+
+<input id="question" placeholder="Question">
+
+
+<input id="optionA" placeholder="Option A">
+
+
+<input id="optionB" placeholder="Option B">
+
+
+<input id="optionC" placeholder="Option C">
+
+
+<input id="optionD" placeholder="Option D">
+
+
+<select id="answer">
+
+<option value="A">Answer A</option>
+<option value="B">Answer B</option>
+<option value="C">Answer C</option>
+<option value="D">Answer D</option>
+
+</select>
+
+
+<input id="quizId" placeholder="Quiz ID">
+
+
+<button id="addQuestion">
+Save Question
+</button>
+
+
+<p id="questionMessage"></p>
+
+
+</div>
+
+
+
+</div>
+
 
 
 
 <script type="module">
 
 
-import { initializeApp }
-
-from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-
+import {db} from "./js/firebase.js";
 
 
 import {
 
-getFirestore,
-
 collection,
-
 addDoc
+
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+
+
+
+let currentQuizId="";
+
+
+
+
+
+document.getElementById("createQuiz").onclick = async()=>{
+
+
+let doc = await addDoc(
+
+collection(db,"quizzes"),
+
+{
+
+title:title.value,
+
+subject:subject.value,
+
+class:class.value,
+
+topic:topic.value,
+
+duration:Number(duration.value),
+
+status:"active",
+
+stream:"all"
 
 }
 
-from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+);
 
 
 
+currentQuizId = doc.id;
 
 
-const firebaseConfig = {
+document.getElementById("quizId").value = doc.id;
 
 
-apiKey: "AIzaSyDCrBUVGFHD2Qu3KStXKOKw7bJFffQSHQ8",
+document.getElementById("quizMessage").innerHTML =
 
-authDomain: "smartpass-rwanda.firebaseapp.com",
+"Quiz created. ID: "+doc.id;
 
-projectId: "smartpass-rwanda",
-
-storageBucket: "smartpass-rwanda.firebasestorage.app",
-
-messagingSenderId: "358453346236",
-
-appId: "1:358453346236:web:c0e8263ea09a0b311af5b9"
 
 };
 
@@ -195,84 +212,41 @@ appId: "1:358453346236:web:c0e8263ea09a0b311af5b9"
 
 
 
-const app = initializeApp(firebaseConfig);
+
+document.getElementById("addQuestion").onclick = async()=>{
 
 
-const db = getFirestore(app);
+await addDoc(
+
+collection(db,"questions"),
+
+{
 
 
+quizId:quizId.value,
 
+question:question.value,
 
+optionA:optionA.value,
 
-window.uploadTest = async function(){
+optionB:optionB.value,
 
+optionC:optionC.value,
 
+optionD:optionD.value,
 
-let text = document.getElementById("testText").value;
-
-
-
-if(text.trim()==""){
-
-alert("Please paste a test first");
-
-return;
-
-}
-
-
-
-
-
-// Split questions automatically
-
-let questions = text.split(/\n(?=\d+\.)/);
-
-
-
-
-
-for(let q of questions){
-
-
-
-await addDoc(collection(db,"quizzes"),{
-
-
-subject:
-document.getElementById("subject").value,
-
-
-level:
-document.getElementById("level").value,
-
-
-term:
-document.getElementById("term").value,
-
-
-duration:
-document.getElementById("duration").value,
-
-
-questionText:q,
-
-
-createdAt:new Date()
-
-
-});
-
+answer:answer.value
 
 
 }
 
+);
 
 
 
+document.getElementById("questionMessage").innerHTML=
 
-alert("✅ Test uploaded and separated into questions!");
-
+"Question saved successfully";
 
 
 };
