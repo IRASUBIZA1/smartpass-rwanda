@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Register - SmartPass Rwanda</title>
+
+<style>
+
+body{
+    font-family:Arial,sans-serif;
+    background:#f5f7fa;
+}
+
+.container{
+    width:350px;
+    margin:50px auto;
+    background:white;
+    padding:30px;
+    border-radius:10px;
+    box-shadow:0 2px 8px #ccc;
+}
+
+input,select{
+    width:100%;
+    padding:10px;
+    margin:8px 0;
+}
+
+button{
+    width:100%;
+    background:#0066cc;
+    color:white;
+    padding:12px;
+    border:0;
+    cursor:pointer;
+    border-radius:5px;
+}
+
+button:hover{
+    background:#004c99;
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+<h2>Student Registration</h2>
+
+<input id="name" placeholder="Full Name">
+
+<input id="email" placeholder="Email">
+
+<input id="password" type="password" placeholder="Password">
+
+
+<select id="class">
+
+<option>S5</option>
+<option>S6</option>
+
+</select>
+
+
+<select id="stream">
+
+<option>MCB</option>
+<option>PCB</option>
+<option>MPCB</option>
+
+</select>
+
+
+<button id="register">
+Create Account
+</button>
+
+
+<p id="message"></p>
+
+
+</div>
+
+
+
+
+<script type="module">
+
+import {auth, db} from "./js/firebase.js";
+
+import { 
+createUserWithEmailAndPassword 
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+
+import {
+doc,
+setDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+
+document.getElementById("register").onclick = async()=>{
+
+
+let name=document.getElementById("name").value;
+
+let email=document.getElementById("email").value;
+
+let password=document.getElementById("password").value;
+
+let studentClass=document.getElementById("class").value;
+
+let stream=document.getElementById("stream").value;
+
+
+
+try{
+
+
+let userCredential =
+await createUserWithEmailAndPassword(
+auth,
+email,
+password
+);
+
+
+let user=userCredential.user;
+
+
+
+await setDoc(doc(db,"users",user.uid),{
+
+name:name,
+email:email,
+role:"student",
+class:studentClass,
+stream:stream,
+createdAt:new Date()
+
+});
+
+
+
+document.getElementById("message").innerHTML=
+"Registration successful ✅";
+
+
+}
+
+
+catch(error){
+
+document.getElementById("message").innerHTML=
+error.message;
+
+}
+
+
+};
+
+
+</script>
+
+
+</body>
+
+</html>
