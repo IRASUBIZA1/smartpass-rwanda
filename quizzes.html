@@ -1,29 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Quizzes - SmartPass Rwanda</title>
+
+<style>
+
+body{
+    font-family:Arial,sans-serif;
+    background:#f5f7fa;
+}
+
+h1{
+    text-align:center;
+    color:#0066cc;
+}
+
+.container{
+    width:90%;
+    margin:auto;
+}
+
+.quiz{
+    background:white;
+    padding:20px;
+    margin:15px 0;
+    border-radius:10px;
+    box-shadow:0 2px 8px #ccc;
+}
+
+button{
+    background:#0066cc;
+    color:white;
+    padding:10px 20px;
+    border:0;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#004c99;
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<h1>🧠 SmartPass Quizzes</h1>
+
+
+<div class="container" id="quizList">
+
+Loading quizzes...
+
+</div>
+
+
+
+
 <script type="module">
+
 
 import {db} from "./js/firebase.js";
 
+
 import {
+
 collection,
 getDocs
+
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
-let quizList=document.getElementById("quizList");
+
+const quizList = document.getElementById("quizList");
+
 
 
 async function loadQuizzes(){
 
+
 try{
 
-let querySnapshot = await getDocs(collection(db,"quizzes"));
+
+const snapshot = await getDocs(
+collection(db,"quizzes")
+);
+
 
 
 quizList.innerHTML="";
 
 
-if(querySnapshot.empty){
 
-quizList.innerHTML="No quizzes found";
+if(snapshot.empty){
+
+quizList.innerHTML =
+"No quizzes available.";
 
 return;
 
@@ -31,29 +112,50 @@ return;
 
 
 
-querySnapshot.forEach((doc)=>{
+snapshot.forEach((doc)=>{
 
 
-let quiz=doc.data();
+const quiz = doc.data();
 
 
-console.log("Quiz:", quiz);
+
+console.log("Quiz found:", quiz);
 
 
 
 quizList.innerHTML += `
 
+
 <div class="quiz">
 
-<h2>${quiz.title}</h2>
 
-<p>Subject: ${quiz.subject}</p>
+<h2>📝 ${quiz.title}</h2>
 
-<p>Class: ${quiz.class}</p>
 
-<p>Topic: ${quiz.topic}</p>
+<p>
+<b>Subject:</b> ${quiz.subject}
+</p>
 
-<p>Duration: ${quiz.duration} minutes</p>
+
+<p>
+<b>Class:</b> ${quiz.class}
+</p>
+
+
+<p>
+<b>Stream:</b> ${quiz.stream}
+</p>
+
+
+<p>
+<b>Topic:</b> ${quiz.topic}
+</p>
+
+
+<p>
+<b>Duration:</b> ${quiz.duration} minutes
+</p>
+
 
 
 <a href="quiz.html?id=${doc.id}">
@@ -64,7 +166,9 @@ Start Quiz
 
 </a>
 
+
 </div>
+
 
 `;
 
@@ -78,21 +182,28 @@ Start Quiz
 catch(error){
 
 
-console.log(error);
+console.error(error);
 
 
 quizList.innerHTML =
 
-"Firebase Error: " + error.message;
+"Error loading quizzes: " + error.message;
 
 
 }
 
 
 }
+
 
 
 loadQuizzes();
 
 
+
 </script>
+
+
+</body>
+
+</html>
