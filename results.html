@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>My Results - SmartPass Rwanda</title>
+
+<style>
+
+body{
+    font-family:Arial,sans-serif;
+    background:#f5f7fa;
+}
+
+h1{
+    text-align:center;
+    color:#0066cc;
+}
+
+.container{
+    width:90%;
+    margin:auto;
+}
+
+.result{
+    background:white;
+    padding:20px;
+    margin:15px 0;
+    border-radius:10px;
+    box-shadow:0 2px 8px #ccc;
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<h1>📊 My Quiz Results</h1>
+
+
+<div class="container" id="results">
+
+Loading results...
+
+</div>
+
+
+
+
+<script type="module">
+
+
+import {db,auth} from "./js/firebase.js";
+
+
+import {
+
+collection,
+query,
+where,
+getDocs
+
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+
+
+async function loadResults(){
+
+
+let user=auth.currentUser;
+
+
+
+if(!user){
+
+window.location.href="login.html";
+
+return;
+
+}
+
+
+
+let q=query(
+
+collection(db,"results"),
+
+where("userId","==",user.uid)
+
+);
+
+
+
+let snapshot=await getDocs(q);
+
+
+
+let box=document.getElementById("results");
+
+box.innerHTML="";
+
+
+
+if(snapshot.empty){
+
+box.innerHTML="No results found.";
+
+return;
+
+}
+
+
+
+snapshot.forEach((doc)=>{
+
+
+let data=doc.data();
+
+
+
+box.innerHTML += `
+
+
+<div class="result">
+
+<h3>Quiz Result</h3>
+
+<p>
+Score: ${data.score}/${data.total}
+</p>
+
+<p>
+Percentage: ${data.percentage}%
+</p>
+
+</div>
+
+
+`;
+
+
+});
+
+
+}
+
+
+
+
+auth.onAuthStateChanged(()=>{
+
+loadResults();
+
+});
+
+
+
+</script>
+
+
+</body>
+
+</html>
