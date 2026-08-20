@@ -2,7 +2,6 @@
 <html lang="en">
 
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -10,79 +9,125 @@
 
 <style>
 
+*{
+    box-sizing:border-box;
+}
+
 body{
     margin:0;
     font-family:Arial,sans-serif;
     background:#f5f7fa;
+    color:#222;
 }
+
+/* HEADER */
 
 header{
     background:#0066cc;
     color:white;
     text-align:center;
-    padding:30px;
+    padding:40px 20px;
 }
 
-nav{
-    background:#004c99;
-    padding:15px;
-    text-align:center;
+header h1{
+    margin:0;
+    font-size:38px;
 }
 
-nav a{
-    color:white;
-    text-decoration:none;
-    margin:10px;
-    font-weight:bold;
+header p{
+    font-size:18px;
+    margin-top:10px;
 }
+
+/* MAIN */
 
 .hero{
     text-align:center;
-    padding:50px 20px;
+    padding:45px 20px 25px;
 }
 
-.hero h1{
+.hero h2{
     color:#0066cc;
+    font-size:30px;
 }
 
-.container{
+.hero p{
+    font-size:17px;
+}
+
+/* PORTALS */
+
+.portals{
     width:90%;
-    margin:auto;
-}
+    max-width:1000px;
+    margin:20px auto 60px;
 
-.cards{
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:20px;
+    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+
+    gap:30px;
 }
 
-.card{
+.portal{
     background:white;
-    padding:25px;
+    padding:45px 30px;
     text-align:center;
-    border-radius:10px;
-    box-shadow:0 2px 8px #ccc;
+
+    border-radius:15px;
+
+    box-shadow:0 4px 15px #ccc;
+
+    transition:0.3s;
 }
 
-button{
+.portal:hover{
+    transform:translateY(-7px);
+}
+
+.portal-icon{
+    font-size:65px;
+}
+
+.portal h3{
+    color:#0066cc;
+    font-size:27px;
+}
+
+.portal p{
+    line-height:1.6;
+    color:#555;
+}
+
+/* BUTTON */
+
+.button{
+    display:inline-block;
+
     background:#0066cc;
     color:white;
-    border:0;
-    padding:10px 20px;
-    border-radius:5px;
-    cursor:pointer;
+
+    padding:13px 28px;
+
+    border-radius:7px;
+
+    text-decoration:none;
+
+    font-weight:bold;
+
+    margin-top:15px;
 }
 
-button:hover{
+.button:hover{
     background:#004c99;
 }
+
+/* FOOTER */
 
 footer{
     background:#004c99;
     color:white;
     text-align:center;
-    padding:20px;
-    margin-top:40px;
+    padding:25px;
 }
 
 </style>
@@ -102,190 +147,65 @@ footer{
 </header>
 
 
-
-<nav>
-
-<a href="index.html">Home</a>
-
-<a href="pastpapers.html">Past Papers</a>
-
-<a href="books.html">Books</a>
-
-<a href="stories.html">Stories</a>
-
-<a href="login.html">Student Login</a>
-
-<a href="register.html">Register</a>
-
-<a href="quizzes.html">Quizzes</a>
-
-<a href="teacher-login.html">👨‍🏫 Teacher Login</a>
-
-</nav>
-
-
-
-
 <section class="hero">
 
-<h1>Your Digital Learning Platform</h1>
+<h2>Welcome to SmartPass Rwanda</h2>
 
 <p>
-Access books, past papers, notes, stories and online quizzes designed for Rwandan students.
+Choose how you would like to use SmartPass.
 </p>
 
 </section>
 
 
+<section class="portals">
 
 
+<!-- E-STORY READING -->
 
+<div class="portal">
 
-<div class="container">
+<div class="portal-icon">
+📖
+</div>
 
-
-<div class="cards">
-
-
-
-<div class="card">
-
-<h2>📖 SmartPass Stories</h2>
+<h3>E-Story Reading</h3>
 
 <p>
-Read stories and novels while improving vocabulary, creativity and reading skills.
+Read stories and novels, improve your vocabulary,
+develop creativity and enjoy reading wherever you are.
 </p>
 
-<a href="stories.html">
-
-<button>
-Explore Stories
-</button>
-
+<a href="stories.html" class="button">
+Enter E-Story Reading
 </a>
 
 </div>
 
 
+<!-- E-LEARNING -->
 
+<div class="portal">
 
+<div class="portal-icon">
+🎓
+</div>
 
-<div class="card">
-
-<h2>📚 Books Library</h2>
+<h3>E-Learning</h3>
 
 <p>
-Access learning books and educational resources.
+Access books, past papers, notes and online quizzes
+designed to help Rwandan students learn and succeed.
 </p>
 
-<a href="books.html">
-
-<button>
-Open Books
-</button>
-
+<a href="e-learning.html" class="button">
+Enter E-Learning
 </a>
 
 </div>
 
 
-
-
-
-<div class="card">
-
-<h2>📝 Past Papers</h2>
-
-<p>
-Practice national examination papers.
-</p>
-
-<a href="pastpapers.html">
-
-<button>
-Open Past Papers
-</button>
-
-</a>
-
-</div>
-
-
-
-
-
-<div class="card">
-
-<h2>🧠 Online Quizzes</h2>
-
-<p>
-Test your knowledge with SmartPass Rwanda quizzes.
-</p>
-
-<a href="quizzes.html">
-
-<button>
-Start Quiz
-</button>
-
-</a>
-
-</div>
-
-
-
-
-
-<div class="card">
-
-<h2>👨‍🎓 Student Account</h2>
-
-<p>
-Create an account, track your results and improve your performance.
-</p>
-
-<a href="register.html">
-
-<button>
-Register Now
-</button>
-
-</a>
-
-</div>
-
-
-
-
-
-<div class="card">
-
-<h2>👨‍🏫 Teacher Panel</h2>
-
-<p>
-Teachers can create quizzes, add questions and manage student assessments.
-</p>
-
-<a href="teacher-login.html">
-
-<button>
-Teacher Login
-</button>
-
-</a>
-
-</div>
-
-
-
-</div>
-
-
-</div>
-
-
-
-
+</section>
 
 
 <footer>
@@ -299,8 +219,6 @@ Learn • Practice • Succeed
 </p>
 
 </footer>
-
-
 
 
 </body>
