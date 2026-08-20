@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Student Dashboard - SmartPass Rwanda</title>
+
+<style>
+
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#f5f7fa;
+}
+
+header{
+    background:#0066cc;
+    color:white;
+    text-align:center;
+    padding:30px;
+}
+
+.container{
+    width:90%;
+    max-width:1000px;
+    margin:40px auto;
+}
+
+.welcome{
+    background:white;
+    padding:25px;
+    border-radius:10px;
+    box-shadow:0 2px 8px #ccc;
+    margin-bottom:25px;
+}
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:20px;
+}
+
+.card{
+    background:white;
+    padding:30px;
+    text-align:center;
+    border-radius:10px;
+    box-shadow:0 2px 8px #ccc;
+}
+
+.card h3{
+    color:#0066cc;
+}
+
+button{
+    background:#0066cc;
+    color:white;
+    border:0;
+    padding:10px 20px;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+.logout{
+    background:#dc3545;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<h1>🎓 SmartPass Rwanda</h1>
+
+<p>Student Dashboard</p>
+
+</header>
+
+<div class="container">
+
+<div class="welcome">
+
+<h2>Welcome, Student! 👋</h2>
+
+<p>
+Choose what you want to do.
+</p>
+
+</div>
+
+
+<div class="cards">
+
+<div class="card">
+
+<h3>🧠 Online Quizzes</h3>
+
+<p>Test your knowledge and get your score instantly.</p>
+
+<button onclick="location.href='quizzes.html'">
+Start Quiz
+</button>
+
+</div>
+
+
+<div class="card">
+
+<h3>📚 Books</h3>
+
+<p>Access educational books and learning materials.</p>
+
+<button onclick="location.href='books.html'">
+Open Books
+</button>
+
+</div>
+
+
+<div class="card">
+
+<h3>📝 Past Papers</h3>
+
+<p>Practice examination papers.</p>
+
+<button onclick="location.href='pastpapers.html'">
+Open Past Papers
+</button>
+
+</div>
+
+
+<div class="card">
+
+<h3>📖 Stories</h3>
+
+<p>Enjoy stories and improve your reading skills.</p>
+
+<button onclick="location.href='stories.html'">
+Read Stories
+</button>
+
+</div>
+
+</div>
+
+<br><br>
+
+<button class="logout" id="logout">
+Logout
+</button>
+
+</div>
+
+
+<script type="module">
+
+import { auth } from "./js/firebase.js";
+
+import {
+    signOut
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+
+document.getElementById("logout").onclick = async () => {
+
+    await signOut(auth);
+
+    window.location.href = "login.html";
+
+};
+
+</script>
+
+</body>
+
+</html>
