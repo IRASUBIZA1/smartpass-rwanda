@@ -6,17 +6,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Register - SmartPass Rwanda</title>
+<title>Register - SmartPass Rwanda 🇷🇼</title>
 
 <style>
 
 body{
+    margin:0;
     font-family:Arial,sans-serif;
     background:#f5f7fa;
 }
 
 .container{
     width:350px;
+    max-width:90%;
     margin:50px auto;
     background:white;
     padding:30px;
@@ -24,10 +26,19 @@ body{
     box-shadow:0 2px 8px #ccc;
 }
 
-input,select{
+h2{
+    text-align:center;
+    color:#0066cc;
+}
+
+input,
+select{
     width:100%;
     padding:10px;
     margin:8px 0;
+    border:1px solid #ccc;
+    border-radius:5px;
+    box-sizing:border-box;
 }
 
 button{
@@ -38,10 +49,17 @@ button{
     border:0;
     cursor:pointer;
     border-radius:5px;
+    margin-top:10px;
+    font-weight:bold;
 }
 
 button:hover{
     background:#004c99;
+}
+
+#message{
+    text-align:center;
+    margin-top:15px;
 }
 
 </style>
@@ -54,28 +72,46 @@ button:hover{
 
 <div class="container">
 
-<h2>Student Registration</h2>
+<h2>🎓 Student Registration</h2>
 
-<input id="name" placeholder="Full Name">
 
-<input id="email" placeholder="Email">
+<input
+    id="name"
+    type="text"
+    placeholder="Full Name"
+    required
+>
 
-<input id="password" type="password" placeholder="Password">
+
+<input
+    id="email"
+    type="email"
+    placeholder="Email"
+    required
+>
+
+
+<input
+    id="password"
+    type="password"
+    placeholder="Password"
+    required
+>
 
 
 <select id="class">
 
-<option>S5</option>
-<option>S6</option>
+<option value="S5">S5</option>
+<option value="S6">S6</option>
 
 </select>
 
 
 <select id="stream">
 
-<option>MCB</option>
-<option>PCB</option>
-<option>MPCB</option>
+<option value="MCB">MCB</option>
+<option value="PCB">PCB</option>
+<option value="MPCB">MPCB</option>
 
 </select>
 
@@ -91,84 +127,194 @@ Create Account
 </div>
 
 
-
-
 <script type="module">
 
-import {auth, db} from "./js/firebase.js";
+import { auth, db } from "./js/firebase.js";
 
-import { 
-createUserWithEmailAndPassword 
+
+import {
+    createUserWithEmailAndPassword
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 
 import {
-doc,
-setDoc
+    doc,
+    setDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
-
-document.getElementById("register").onclick = async()=>{
-
-
-let name=document.getElementById("name").value;
-
-let email=document.getElementById("email").value;
-
-let password=document.getElementById("password").value;
-
-let studentClass=document.getElementById("class").value;
-
-let stream=document.getElementById("stream").value;
+document.getElementById("register").onclick = async function(){
 
 
-
-try{
-
-
-let userCredential =
-await createUserWithEmailAndPassword(
-auth,
-email,
-password
-);
+    const name =
+        document.getElementById("name").value.trim();
 
 
-let user=userCredential.user;
+    const email =
+        document.getElementById("email").value.trim();
 
 
-
-await setDoc(doc(db,"users",user.uid),{
-
-name:name,
-email:email,
-role:"student",
-class:studentClass,
-stream:stream,
-createdAt:new Date()
-
-});
+    const password =
+        document.getElementById("password").value;
 
 
-
-document.getElementById("message").innerHTML=
-"Registration successful ✅";
-
-
-}
+    const studentClass =
+        document.getElementById("class").value;
 
 
-catch(error){
+    const stream =
+        document.getElementById("stream").value;
 
-document.getElementById("message").innerHTML=
-error.message;
 
-}
+    const message =
+        document.getElementById("message");
 
+
+    /* CHECK EMPTY FIELDS */
+
+    if(!name || !email || !password){
+
+        message.innerHTML =
+        "Please fill in all fields.";
+
+        return;
+
+    }
+
+
+    /* CHECK PASSWORD */
+
+    if(password.length < 6){
+
+        message.innerHTML =
+        "Password must be at least 6 characters.";
+
+        return;
+
+    }
+
+
+    try{
+
+
+        message.innerHTML =
+        "Creating your account...";
+
+
+        /* CREATE FIREBASE ACCOUNT */
+
+        const userCredential =
+        await createUserWithEmailAndPassword(
+            auth,
+            email,
+            password
+        );
+
+
+        const user =
+        userCredential.user;
+
+
+        /* SAVE STUDENT INFORMATION */
+
+        await setDoc(
+            doc(db, "users", user.uid),
+            {
+
+                name: name,
+
+                email: email,
+
+                role: "student",
+
+                class: studentClass,
+
+                stream: stream,
+
+                createdAt: new Date()
+
+            }
+        );
+
+
+        /* SUCCESS */
+
+        message.innerHTML =
+        "Registration successful ✅";
+
+
+        /*
+        SEND STUDENT TO DASHBOARD
+        */
+
+        setTimeout(function(){
+
+            window.location.href =
+            "student-dashboard.html";
+
+        }, 800);
+
+
+    }
+
+
+    catch(error){
+
+
+        console.error(error);
+
+
+        let errorMessage =
+        "Registration failed.";
+
+
+        if(error.code === "auth/email-already-in-use"){
+
+            errorMessage =
+            "This email is already registered. Please log in.";
+
+        }
+
+
+        else if(error.code === "auth/invalid-email"){
+
+            errorMessage =
+            "Please enter a valid email address.";
+
+        }
+
+
+        else if(error.code === "auth/weak-password"){
+
+            errorMessage =
+            "Password must be at least 6 characters.";
+
+        }
+
+
+        else if(error.code === "permission-denied"){
+
+            errorMessage =
+            "Database permission denied. Check Firestore Rules.";
+
+        }
+
+
+        else{
+
+            errorMessage =
+            error.message;
+
+        }
+
+
+        message.innerHTML =
+        "❌ " + errorMessage;
+
+
+    }
 
 };
-
 
 </script>
 
