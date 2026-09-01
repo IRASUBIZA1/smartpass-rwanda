@@ -18,55 +18,52 @@ body{
     background:#f5f7fa;
     min-height:100vh;
     display:flex;
-    align-items:center;
     justify-content:center;
+    align-items:center;
 }
 
 .container{
     width:90%;
-    max-width:450px;
+    max-width:430px;
     background:white;
-    padding:30px;
+    padding:35px;
     border-radius:15px;
-    box-shadow:0 5px 20px rgba(0,0,0,0.15);
+    box-shadow:0 5px 20px rgba(0,0,0,0.12);
+    text-align:center;
 }
 
 .logo{
-    text-align:center;
-    color:#0066cc;
+    font-size:50px;
     margin-bottom:10px;
 }
 
+h1{
+    color:#0066cc;
+    margin-bottom:8px;
+}
+
 .subtitle{
-    text-align:center;
     color:#666;
     margin-bottom:25px;
 }
 
-label{
-    display:block;
-    margin-top:15px;
-    margin-bottom:6px;
-    font-weight:bold;
-    color:#333;
-}
-
 input{
     width:100%;
-    padding:12px;
+    padding:13px;
+    margin:8px 0;
     border:1px solid #ccc;
     border-radius:7px;
-    font-size:15px;
+    font-size:16px;
 }
 
 button{
     width:100%;
-    margin-top:25px;
     padding:13px;
-    background:#0066cc;
-    color:white;
+    margin-top:15px;
     border:none;
     border-radius:7px;
+    background:#0066cc;
+    color:white;
     font-size:16px;
     font-weight:bold;
     cursor:pointer;
@@ -77,24 +74,25 @@ button:hover{
 }
 
 .message{
-    text-align:center;
     margin-top:15px;
     font-weight:bold;
 }
 
-.links{
-    text-align:center;
+.login{
     margin-top:20px;
 }
 
-.links a{
+.login a{
     color:#0066cc;
-    text-decoration:none;
     font-weight:bold;
+    text-decoration:none;
 }
 
-.links a:hover{
-    text-decoration:underline;
+.back{
+    display:block;
+    margin-top:20px;
+    color:#555;
+    text-decoration:none;
 }
 </style>
 </head>
@@ -103,70 +101,67 @@ button:hover{
 
 <div class="container">
 
-    <h1 class="logo">👨‍🏫 SmartPass Rwanda</h1>
+    <div class="logo">👨‍🏫</div>
+
+    <h1>Teacher Registration</h1>
 
     <p class="subtitle">
-        Teacher Registration
+        Create your SmartPass Rwanda teacher account
     </p>
 
     <form id="registerForm">
 
-        <label for="name">Full Name</label>
         <input
             type="text"
             id="name"
-            placeholder="Enter your full name"
+            placeholder="Teacher Name"
             required
         >
 
-        <label for="email">Email Address</label>
         <input
             type="email"
             id="email"
-            placeholder="Enter your email"
+            placeholder="Teacher Email"
             required
         >
 
-        <label for="password">Password</label>
         <input
             type="password"
             id="password"
-            placeholder="Create a password"
+            placeholder="Password"
             minlength="6"
             required
         >
 
-        <label for="confirmPassword">Confirm Password</label>
         <input
             type="password"
             id="confirmPassword"
-            placeholder="Confirm your password"
+            placeholder="Confirm Password"
             minlength="6"
             required
         >
 
         <button type="submit">
-            Register as Teacher
+            📝 Create Teacher Account
         </button>
 
     </form>
 
-    <div id="message" class="message"></div>
+    <p id="message" class="message"></p>
 
-    <div class="links">
-        <p>
-            Already have an account?
-            <a href="teacher-login.html">Teacher Login</a>
-        </p>
-
-        <br>
-
-        <a href="e-learning.html">
-            ← Back to E-Learning
+    <div class="login">
+        Already have an account?
+        <a href="teacher-login.html">
+            Login
         </a>
     </div>
 
+    <a class="back" href="e-learning.html">
+        ← Back to E-Learning
+    </a>
+
 </div>
+
 
 <script type="module">
 
@@ -175,16 +170,10 @@ from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 import {
     getAuth,
-    createUserWithEmailAndPassword
+    createUserWithEmailAndPassword,
+    updateProfile
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-import {
-    getFirestore,
-    doc,
-    setDoc
-}
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
 /* YOUR FIREBASE CONFIG */
@@ -194,17 +183,19 @@ const firebaseConfig = {
     authDomain: "YOUR_PROJECT.firebaseapp.com",
     projectId: "YOUR_PROJECT_ID",
     storageBucket: "YOUR_PROJECT.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
+    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
     appId: "YOUR_APP_ID"
 };
 
+
+/* INITIALIZE FIREBASE */
 
 const app = initializeApp(firebaseConfig);
 
 const auth = getAuth(app);
 
-const db = getFirestore(app);
 
+/* REGISTRATION */
 
 document
 .getElementById("registerForm")
@@ -239,13 +230,13 @@ document
     }
 
 
+    message.style.color = "#0066cc";
+
+    message.textContent =
+        "Creating teacher account...";
+
+
     try{
-
-        message.style.color = "#0066cc";
-
-        message.textContent =
-            "Creating teacher account...";
-
 
         const userCredential =
             await createUserWithEmailAndPassword(
@@ -255,19 +246,10 @@ document
             );
 
 
-        const user =
-            userCredential.user;
-
-
-        /* SAVE TEACHER INFORMATION */
-
-        await setDoc(
-            doc(db, "teachers", user.uid),
+        await updateProfile(
+            userCredential.user,
             {
-                name: name,
-                email: email,
-                role: "teacher",
-                createdAt: new Date()
+                displayName:name
             }
         );
 
@@ -275,7 +257,7 @@ document
         message.style.color = "green";
 
         message.textContent =
-            "Registration successful!";
+            "Teacher account created successfully!";
 
 
         setTimeout(function(){
@@ -286,15 +268,34 @@ document
         },1500);
 
 
-    }catch(error){
+    }
+    catch(error){
 
         console.error(error);
 
         message.style.color = "red";
 
-        message.textContent =
-            "Registration failed: " +
-            error.message;
+
+        if(error.code === "auth/email-already-in-use"){
+
+            message.textContent =
+                "This email is already registered.";
+
+        }
+
+        else if(error.code === "auth/weak-password"){
+
+            message.textContent =
+                "Password must contain at least 6 characters.";
+
+        }
+
+        else{
+
+            message.textContent =
+                "Registration failed: " + error.message;
+
+        }
 
     }
 
