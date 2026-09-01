@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Teacher Registration - SmartPass Rwanda</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#f5f7fa;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.container{
+    width:90%;
+    max-width:450px;
+    background:white;
+    padding:30px;
+    border-radius:15px;
+    box-shadow:0 5px 20px rgba(0,0,0,0.15);
+}
+
+.logo{
+    text-align:center;
+    color:#0066cc;
+    margin-bottom:10px;
+}
+
+.subtitle{
+    text-align:center;
+    color:#666;
+    margin-bottom:25px;
+}
+
+label{
+    display:block;
+    margin-top:15px;
+    margin-bottom:6px;
+    font-weight:bold;
+    color:#333;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    border:1px solid #ccc;
+    border-radius:7px;
+    font-size:15px;
+}
+
+button{
+    width:100%;
+    margin-top:25px;
+    padding:13px;
+    background:#0066cc;
+    color:white;
+    border:none;
+    border-radius:7px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#004c99;
+}
+
+.message{
+    text-align:center;
+    margin-top:15px;
+    font-weight:bold;
+}
+
+.links{
+    text-align:center;
+    margin-top:20px;
+}
+
+.links a{
+    color:#0066cc;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+.links a:hover{
+    text-decoration:underline;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1 class="logo">👨‍🏫 SmartPass Rwanda</h1>
+
+    <p class="subtitle">
+        Teacher Registration
+    </p>
+
+    <form id="registerForm">
+
+        <label for="name">Full Name</label>
+        <input
+            type="text"
+            id="name"
+            placeholder="Enter your full name"
+            required
+        >
+
+        <label for="email">Email Address</label>
+        <input
+            type="email"
+            id="email"
+            placeholder="Enter your email"
+            required
+        >
+
+        <label for="password">Password</label>
+        <input
+            type="password"
+            id="password"
+            placeholder="Create a password"
+            minlength="6"
+            required
+        >
+
+        <label for="confirmPassword">Confirm Password</label>
+        <input
+            type="password"
+            id="confirmPassword"
+            placeholder="Confirm your password"
+            minlength="6"
+            required
+        >
+
+        <button type="submit">
+            Register as Teacher
+        </button>
+
+    </form>
+
+    <div id="message" class="message"></div>
+
+    <div class="links">
+        <p>
+            Already have an account?
+            <a href="teacher-login.html">Teacher Login</a>
+        </p>
+
+        <br>
+
+        <a href="e-learning.html">
+            ← Back to E-Learning
+        </a>
+    </div>
+
+</div>
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+    getAuth,
+    createUserWithEmailAndPassword
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import {
+    getFirestore,
+    doc,
+    setDoc
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+/* YOUR FIREBASE CONFIG */
+
+const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+};
+
+
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+
+const db = getFirestore(app);
+
+
+document
+.getElementById("registerForm")
+.addEventListener("submit", async function(e){
+
+    e.preventDefault();
+
+    const name =
+        document.getElementById("name").value.trim();
+
+    const email =
+        document.getElementById("email").value.trim();
+
+    const password =
+        document.getElementById("password").value;
+
+    const confirmPassword =
+        document.getElementById("confirmPassword").value;
+
+    const message =
+        document.getElementById("message");
+
+
+    if(password !== confirmPassword){
+
+        message.style.color = "red";
+
+        message.textContent =
+            "Passwords do not match.";
+
+        return;
+    }
+
+
+    try{
+
+        message.style.color = "#0066cc";
+
+        message.textContent =
+            "Creating teacher account...";
+
+
+        const userCredential =
+            await createUserWithEmailAndPassword(
+                auth,
+                email,
+                password
+            );
+
+
+        const user =
+            userCredential.user;
+
+
+        /* SAVE TEACHER INFORMATION */
+
+        await setDoc(
+            doc(db, "teachers", user.uid),
+            {
+                name: name,
+                email: email,
+                role: "teacher",
+                createdAt: new Date()
+            }
+        );
+
+
+        message.style.color = "green";
+
+        message.textContent =
+            "Registration successful!";
+
+
+        setTimeout(function(){
+
+            window.location.href =
+                "teacher.html";
+
+        },1500);
+
+
+    }catch(error){
+
+        console.error(error);
+
+        message.style.color = "red";
+
+        message.textContent =
+            "Registration failed: " +
+            error.message;
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>
