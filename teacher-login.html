@@ -1,145 +1,286 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Teacher Login - SmartPass Rwanda</title>
 
 <style>
-
-body{
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
     font-family:Arial,sans-serif;
-    background:#f5f7fa;
 }
 
-.container{
-    width:350px;
-    margin:50px auto;
+body{
+    min-height:100vh;
+    background:#f5f7fa;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.login-box{
     background:white;
-    padding:30px;
-    border-radius:10px;
-    box-shadow:0 2px 8px #ccc;
+    width:90%;
+    max-width:420px;
+    padding:35px;
+    border-radius:15px;
+    box-shadow:0 5px 20px rgba(0,0,0,0.15);
+}
+
+.logo{
+    text-align:center;
+    color:#0066cc;
+    margin-bottom:5px;
+}
+
+.subtitle{
+    text-align:center;
+    color:#666;
+    margin-bottom:25px;
+}
+
+label{
+    display:block;
+    margin-top:15px;
+    margin-bottom:6px;
+    font-weight:bold;
+    color:#333;
 }
 
 input{
     width:100%;
-    padding:10px;
-    margin:10px 0;
+    padding:13px;
+    border:1px solid #ccc;
+    border-radius:7px;
+    font-size:16px;
+}
+
+input:focus{
+    outline:none;
+    border-color:#0066cc;
 }
 
 button{
     width:100%;
-    padding:12px;
+    padding:13px;
+    margin-top:20px;
+    border:none;
+    border-radius:7px;
     background:#0066cc;
     color:white;
-    border:0;
-    border-radius:5px;
+    font-size:16px;
+    font-weight:bold;
     cursor:pointer;
 }
 
+button:hover{
+    background:#004c99;
+}
+
+.register{
+    text-align:center;
+    margin-top:20px;
+}
+
+.register a{
+    color:#0066cc;
+    font-weight:bold;
+    text-decoration:none;
+}
+
+.message{
+    margin-top:15px;
+    text-align:center;
+    font-weight:bold;
+}
+
+.back{
+    text-align:center;
+    margin-top:20px;
+}
+
+.back a{
+    color:#555;
+    text-decoration:none;
+}
 </style>
-
 </head>
-
 
 <body>
 
+<div class="login-box">
 
-<div class="container">
+    <h1 class="logo">👨‍🏫 Teacher Login</h1>
 
-<h2>👨‍🏫 Teacher Login</h2>
+    <p class="subtitle">
+        SmartPass Rwanda
+    </p>
 
+    <form id="loginForm">
 
-<input id="email" placeholder="Teacher Email">
+        <label for="email">Teacher Email</label>
 
+        <input
+            type="email"
+            id="email"
+            placeholder="Enter your email"
+            required
+        >
 
-<input id="password" type="password" placeholder="Password">
+        <label for="password">Password</label>
 
+        <input
+            type="password"
+            id="password"
+            placeholder="Enter your password"
+            required
+        >
 
-<button id="login">
-Login
-</button>
+        <button type="submit">
+            Login
+        </button>
 
+    </form>
 
-<p id="message"></p>
+    <div id="message" class="message"></div>
 
+    <div class="register">
+        Don't have a teacher account?
+        <a href="teacher-register.html">
+            Register here
+        </a>
+    </div>
+
+    <div class="back">
+        <a href="index.html">
+            ← Back to SmartPass Rwanda
+        </a>
+    </div>
 
 </div>
 
 
-
-
 <script type="module">
 
-
-import {auth} from "./js/firebase.js";
-
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 import {
-
-signInWithEmailAndPassword
-
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-
-
-document.getElementById("login").onclick = async()=>{
-
-
-let email =
-document.getElementById("email").value;
-
-
-let password =
-document.getElementById("password").value;
-
-
-
-try{
-
-
-await signInWithEmailAndPassword(
-
-auth,
-
-email,
-
-password
-
-);
-
-
-
-document.getElementById("message").innerHTML =
-"Login successful ✅";
-
-
-window.location.href="teacher.html";
-
-
+    getAuth,
+    signInWithEmailAndPassword
 }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 
-catch(error){
+// ========================================
+// YOUR FIREBASE CONFIGURATION
+// ========================================
 
+const firebaseConfig = {
 
-document.getElementById("message").innerHTML =
-error.message;
+    apiKey: "YOUR_API_KEY",
 
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
 
-}
+    projectId: "YOUR_PROJECT_ID",
 
+    storageBucket: "YOUR_PROJECT.firebasestorage.app",
 
+    messagingSenderId: "YOUR_SENDER_ID",
+
+    appId: "YOUR_APP_ID"
 
 };
 
 
+// ========================================
+// INITIALIZE FIREBASE
+// ========================================
+
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+
+
+// ========================================
+// LOGIN
+// ========================================
+
+document
+.getElementById("loginForm")
+.addEventListener("submit", async function(e){
+
+    e.preventDefault();
+
+    const email =
+        document.getElementById("email").value.trim();
+
+    const password =
+        document.getElementById("password").value;
+
+    const message =
+        document.getElementById("message");
+
+    message.textContent = "Logging in...";
+
+    try{
+
+        await signInWithEmailAndPassword(
+            auth,
+            email,
+            password
+        );
+
+        message.style.color = "green";
+
+        message.textContent =
+            "Login successful! Opening dashboard...";
+
+        setTimeout(function(){
+
+            window.location.href =
+                "teacher.html";
+
+        },1000);
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+        message.style.color = "red";
+
+        if(error.code === "auth/invalid-credential"){
+
+            message.textContent =
+                "Incorrect email or password.";
+
+        }
+
+        else if(error.code === "auth/too-many-requests"){
+
+            message.textContent =
+                "Too many login attempts. Please wait and try again.";
+
+        }
+
+        else{
+
+            message.textContent =
+                "Login failed: " + error.message;
+
+        }
+
+    }
+
+});
+
 </script>
 
-
 </body>
-
 </html>
